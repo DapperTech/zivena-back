@@ -1,0 +1,32 @@
+﻿import { Router } from "express";
+import { authRoutes } from "../modules/auth/auth.routes";
+import { healthRoutes } from "../modules/health/routes/health.routes";
+import { leadRoutes } from "../modules/leads/lead.routes";
+import { categoryRoutes } from "../modules/categories/category.routes";
+import { clientRoutes } from "../modules/clients/client.routes";
+import { orderRoutes } from "../modules/orders/order.routes";
+import { productRoutes } from "../modules/products/product.routes";
+import { productVisibilityRoutes } from "../modules/productVisibility/productVisibility.routes";
+import { providerRoutes } from "../modules/providers/provider.routes";
+import { quotationRoutes } from "../modules/quotations/quotation.routes";
+import { requestRoutes } from "../modules/requests/request.routes";
+import { seoRoutes } from "../modules/seo/seo.routes";
+import { subCategoryRoutes } from "../modules/subCategories/subCategory.routes";
+import { userRoutes } from "../modules/users/user.routes";
+
+export const apiRoutes = Router();
+
+apiRoutes.use(healthRoutes);
+apiRoutes.use("/auth", authRoutes);
+apiRoutes.use("/users", userRoutes);
+apiRoutes.use("/products", productRoutes);
+apiRoutes.use("/productVisibility", productVisibilityRoutes);
+apiRoutes.use("/leads", leadRoutes);
+apiRoutes.use("/seo", seoRoutes);
+apiRoutes.use("/providers", providerRoutes);
+apiRoutes.use("/categories", categoryRoutes);
+apiRoutes.use("/subCategories", subCategoryRoutes);
+apiRoutes.use("/requests", requestRoutes);
+apiRoutes.use("/clients", clientRoutes);
+apiRoutes.use("/quotations", quotationRoutes);
+apiRoutes.use("/orders", orderRoutes);

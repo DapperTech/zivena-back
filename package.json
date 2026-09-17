@@ -1,0 +1,42 @@
+{
+  "name": "zivena-back",
+  "version": "1.0.0",
+  "description": "Scalable MEAN backend v1 with TypeScript, Express, Mongoose, and Firebase-ready auth",
+  "main": "dist/server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server/index.js",
+    "bootstrap:admin": "tsx src/scripts/bootstrapAdmin.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.0",
+    "firebase-admin": "^14.2.0",
+    "fuse.js": "^7.5.0",
+    "helmet": "^8.3.0",
+    "mongoose": "^9.8.0",
+    "morgan": "^1.11.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.13.3",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
