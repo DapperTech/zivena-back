@@ -6,6 +6,7 @@ import { requestLogger } from "../middlewares/requestLogger";
 import { apiRoutes } from "./routes";
 import { notFound } from "../middlewares/notFound";
 import { errorHandler } from "../middlewares/errorHandler";
+import { websiteCatalogRoutes } from "../modules/websiteCatalog/catalog.routes";
 
 export const createApp = () => {
   const app = express();
@@ -31,6 +32,7 @@ export const createApp = () => {
   app.use(requestLogger);
 
   app.use("/api/v1", apiRoutes);
+  app.use("/api/v2", websiteCatalogRoutes);
 
   app.use(notFound);
   app.use(errorHandler);

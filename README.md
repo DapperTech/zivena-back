@@ -4,6 +4,9 @@ Backend base MEAN (MongoDB + Express + Angular + Node) con TypeScript, arquitect
 
 El proyecto usa Express 5, Mongoose 9, Zod 4 y TypeScript 7 sobre Node.js 24 LTS.
 
+El website dispone de una API pública de lectura en `/api/v2`, independiente
+del panel en `/api/v1`. Consulta [el contrato y la configuración](docs/website-catalog-v2.md).
+
 ## Quickstart
 
 1. Instala dependencias:
