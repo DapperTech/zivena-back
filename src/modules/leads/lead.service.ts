@@ -4,6 +4,7 @@ import { CreateLeadDto, UpdateLeadDto, WebsiteLeadDto } from "./lead.dto";
 import { LeadRepository } from "./lead.repository";
 import { LeadEntity } from "./lead.types";
 import { QuotationService } from "../quotations/quotation.service";
+import { WebsiteLeadSubmissionDto } from "./websiteLead.dto";
 
 const isAdmin = (user: AuthUser): boolean => user.roles?.includes("admin") ?? false;
 
@@ -42,6 +43,30 @@ export class LeadService {
       }
     });
     return linkedLead ?? lead;
+  }
+
+  async submitWebsite(payload: WebsiteLeadSubmissionDto): Promise<{
+    id: string;
+    type: "contact" | "quotation";
+    status: "received";
+    quotationId?: string;
+  }> {
+    if (payload.type === "contact") {
+      const lead = await this.repository.createWebsiteContact(payload);
+      return { id: lead.id, type: "contact", status: "received" };
+    }
+
+    const lead = await this.createWebsite({
+      ...payload,
+      deadline: payload.deadline ? new Date(payload.deadline) : undefined
+    });
+    const quotationId = lead.metadata.quotationId;
+    return {
+      id: lead.id,
+      type: "quotation",
+      status: "received",
+      ...(typeof quotationId === "string" ? { quotationId } : {})
+    };
   }
 
   create(payload: CreateLeadDto, user: AuthUser): Promise<LeadEntity> {

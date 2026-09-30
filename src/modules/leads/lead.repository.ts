@@ -2,6 +2,7 @@ import { CreateLeadDto, UpdateLeadDto, WebsiteLeadDto } from "./lead.dto";
 import { LeadModel } from "./lead.model";
 import { LeadEntity } from "./lead.types";
 import type { QuotationStatus } from "../quotations/quotation.types";
+import { WebsiteContactDto } from "./websiteLead.dto";
 
 type LeadRecord = Omit<LeadEntity, "id"> & { _id: { toString(): string } };
 
@@ -53,6 +54,24 @@ export class LeadRepository {
       deadline: payload.deadline,
       message: payload.message,
       products: payload.products,
+      metadata: { channel: "zivena.mx" },
+      lastActivityAt: new Date()
+    });
+    return mapEntity(document.toObject() as unknown as LeadRecord);
+  }
+
+  async createWebsiteContact(payload: WebsiteContactDto): Promise<LeadEntity> {
+    const document = await LeadModel.create({
+      title: payload.company ? `Contacto · ${payload.company}` : `Contacto · ${payload.name}`,
+      contactName: payload.name,
+      company: payload.company,
+      email: payload.email,
+      phone: payload.phone,
+      source: "websiteContact",
+      stage: "new",
+      priority: "medium",
+      message: payload.message,
+      products: [],
       metadata: { channel: "zivena.mx" },
       lastActivityAt: new Date()
     });

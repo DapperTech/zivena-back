@@ -36,6 +36,8 @@ del panel en `/api/v1`. Consulta [el contrato y la configuración](docs/website-
 
 ## Endpoints base por modulo
 
+La integración de formularios del nuevo sitio se documenta en [docs/website-leads-v2.md](docs/website-leads-v2.md).
+
 - GET /api/v1/health
 - /api/v1/users
 - /api/v1/products

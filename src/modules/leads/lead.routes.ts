@@ -14,7 +14,7 @@ import { LeadRepository } from "./lead.repository";
 import { LeadService } from "./lead.service";
 import { QuotationRepository } from "../quotations/quotation.repository";
 import { QuotationService } from "../quotations/quotation.service";
-import { rateLimit } from "express-rate-limit";
+import { websiteLeadLimiter } from "./websiteLeadLimiter";
 
 const repository = new LeadRepository();
 const quotationService = new QuotationService(new QuotationRepository());
@@ -22,22 +22,6 @@ const service = new LeadService(repository, quotationService);
 const controller = new LeadController(service);
 
 export const leadRoutes = Router();
-
-const websiteLeadLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 10,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  handler: (_req, res) => {
-    res.status(429).json({
-      success: false,
-      error: {
-        code: "RATE_LIMITED",
-        message: "Too many quotation requests. Please try again later."
-      }
-    });
-  }
-});
 
 leadRoutes.post(
   "/website",

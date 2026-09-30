@@ -1,7 +1,7 @@
 import { Metadata } from "../../shared/types/common";
 
 export type LeadStage = "new" | "contacted" | "proposal" | "won" | "lost";
-export type LeadSource = "websiteQuote" | "manual" | "referral";
+export type LeadSource = "websiteQuote" | "websiteContact" | "manual" | "referral";
 export type LeadPriority = "low" | "medium" | "high";
 
 export type LeadProductItem = {

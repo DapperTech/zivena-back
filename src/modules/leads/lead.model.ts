@@ -31,7 +31,7 @@ const leadSchema = new Schema(
     phone: { type: String, default: null, trim: true },
     source: {
       type: String,
-      enum: ["websiteQuote", "manual", "referral"],
+      enum: ["websiteQuote", "websiteContact", "manual", "referral"],
       required: true,
       default: "manual",
       index: true

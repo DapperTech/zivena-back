@@ -11,6 +11,10 @@ export class LeadController extends BaseController {
     this.ok(res, await this.service.createWebsite(req.body), 201);
   });
 
+  submitWebsite = this.execute(async (req, res) => {
+    this.ok(res, await this.service.submitWebsite(req.body), 201);
+  });
+
   list = this.execute(async (req, res) => {
     if (!req.user) throw new UnauthorizedAppError();
     this.ok(res, await this.service.list(req.user));
