@@ -93,6 +93,7 @@ const productSchema = new Schema<ProductRecord>(
     subcategoryIds: { type: [String], default: [] },
     description: { type: String, required: true },
     featured: { type: Boolean, required: true },
+    isHot: { type: Boolean, default: false },
     availability: { type: availabilitySchema, required: true },
     images: { type: [imageSchema], default: [] },
     variants: { type: [variantSchema], default: [] },

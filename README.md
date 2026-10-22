@@ -7,6 +7,10 @@ El proyecto usa Express 5, Mongoose 9, Zod 4 y TypeScript 7 sobre Node.js 24 LTS
 El website dispone de una API pública de lectura en `/api/v2`, independiente
 del panel en `/api/v1`. Consulta [el contrato y la configuración](docs/website-catalog-v2.md).
 
+La selección editorial hot usa `products.isHot` y se consulta en
+`GET /api/v2/products/hot`. La integración del website y el control desde el panel
+están en el [handoff para Jorge](docs/website-hot-products-v2.md).
+
 ## Quickstart
 
 1. Instala dependencias:
@@ -24,6 +28,8 @@ del panel en `/api/v1`. Consulta [el contrato y la configuración](docs/website-
 - npm run build: compila TypeScript a dist
 - npm run start: ejecuta build compilado
 - npm run typecheck: validacion de tipos sin emitir
+- npm test: pruebas de leads públicos y productos hot
+- npm run seed:hot: prevalidación de los 29 productos hot iniciales; agregar `-- --apply` para marcarlos en MongoDB
 
 ## Estructura
 

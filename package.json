@@ -4,11 +4,12 @@
   "description": "Scalable MEAN backend v1 with TypeScript, Express, Mongoose, and Firebase-ready auth",
   "main": "dist/server/index.js",
   "scripts": {
-    "test": "tsx --test src/modules/leads/websiteLead.test.ts",
+    "test": "tsx --test src/modules/leads/websiteLead.test.ts src/modules/websiteCatalog/hotProducts.test.ts",
     "dev": "tsx watch src/server/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server/index.js",
     "bootstrap:admin": "tsx src/scripts/bootstrapAdmin.ts",
+    "seed:hot": "tsx src/scripts/seedHotProducts.ts",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck"
   },

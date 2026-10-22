@@ -51,6 +51,7 @@ type CatalogDocument = {
   categoryIds: string[];
   subcategoryIds: string[];
   featured: boolean;
+  isHot?: boolean;
   availability: ProductAvailability;
   images: ProductImage[];
 };
@@ -59,7 +60,8 @@ const mapEntity = (document: Record<string, unknown>): ProductEntity => {
   const { _id, ...product } = document;
   return {
     databaseId: String(_id),
-    ...(product as Omit<ProductEntity, "databaseId">)
+    ...(product as Omit<ProductEntity, "databaseId">),
+    isHot: product.isHot === true
   };
 };
 
@@ -130,6 +132,7 @@ export class ProductRepository {
           categoryIds: 1,
           subcategoryIds: 1,
           featured: 1,
+          isHot: { $eq: [{ $ifNull: ["$isHot", false] }, true] },
           availability: 1,
           image: { $arrayElemAt: ["$images", 0] }
         }
@@ -223,6 +226,9 @@ export class ProductRepository {
   async findAdminCatalog(query: AdminProductListQuery): Promise<AdminCatalogPage> {
     const filter: Record<string, unknown> = {};
     if (query.category) filter.categoryIds = query.category;
+    if (query.isHot !== undefined) {
+      filter.isHot = query.isHot ? true : { $ne: true };
+    }
     if (query.search) {
       const search = new RegExp(escapeRegex(query.search), "i");
       filter.$or = [{ name: search }, { sku: search }];
@@ -265,6 +271,7 @@ export class ProductRepository {
           categoryIds: 1,
           subcategoryIds: 1,
           featured: 1,
+          isHot: { $eq: [{ $ifNull: ["$isHot", false] }, true] },
           availability: 1,
           image: { $arrayElemAt: ["$images", 0] },
           isVisible: 1
@@ -385,6 +392,7 @@ export class ProductRepository {
             categoryIds: 1,
             subcategoryIds: 1,
             featured: 1,
+            isHot: 1,
             availability: 1,
             images: { $slice: 1 }
           }
@@ -405,6 +413,7 @@ export class ProductRepository {
           name: document.name,
           categoryIds: document.categoryIds,
           featured: document.featured,
+          isHot: document.isHot === true,
           availability: document.availability,
           image,
           categoryTitles: product.categoryTitles,

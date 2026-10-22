@@ -70,6 +70,7 @@ export type ProductEntity = {
   subcategoryIds: string[];
   description: string;
   featured: boolean;
+  isHot: boolean;
   availability: ProductAvailability;
   images: ProductImage[];
   variants: ProductVariant[];
@@ -87,6 +88,7 @@ export type CatalogProduct = Pick<
   | "name"
   | "categoryIds"
   | "featured"
+  | "isHot"
   | "availability"
 > & {
   slug: string;

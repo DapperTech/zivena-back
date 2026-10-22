@@ -11,7 +11,7 @@ type PublicProduct = Omit<ProductEntity, "databaseId">;
 
 const summaryProjection = {
   _id: 0, id: 1, sku: 1, name: 1, categoryIds: 1, subcategoryIds: 1,
-  featured: 1, availability: 1, images: { $slice: 1 }
+  featured: 1, isHot: 1, availability: 1, images: { $slice: 1 }
 };
 
 /** Only reads existing collections. No saves, upserts, seeds or index creation. */
@@ -55,7 +55,8 @@ export class WebsiteCatalogRepository {
       sku: { $nin: hidden },
       ...(query.category ? { categoryIds: query.category } : {}),
       ...(query.subcategory ? { subcategoryIds: query.subcategory } : {}),
-      ...(query.featured !== undefined ? { featured: query.featured } : {})
+      ...(query.featured !== undefined ? { featured: query.featured } : {}),
+      ...(query.isHot !== undefined ? { isHot: query.isHot ? true : { $ne: true } } : {})
     };
     let rankedIds: string[] | undefined;
     if (query.search) {
@@ -98,9 +99,10 @@ export class WebsiteCatalogRepository {
     return {
       items: documents.map(document => {
         const slug = productSlug(document.name, document.sku);
-        if (query.view === "detail") return { ...document, slug };
+        const isHot = document.isHot === true;
+        if (query.view === "detail") return { ...document, slug, isHot };
         const { images, ...product } = document;
-        return { ...product, slug, image: images?.[0] ?? null };
+        return { ...product, slug, isHot, image: images?.[0] ?? null };
       }),
       pagination: { page: query.page, limit: query.limit, total, totalPages, hasNextPage: query.page < totalPages }
     };
@@ -109,7 +111,7 @@ export class WebsiteCatalogRepository {
   async product(id: string): Promise<(PublicProduct & { slug: string }) | null> {
     const hidden = await this.hiddenSkus();
     const document = await ProductModel.findOne({ id, sku: { $nin: hidden } }, { _id: 0 }).lean();
-    return document ? { ...document, slug: productSlug(document.name, document.sku) } : null;
+    return document ? { ...document, slug: productSlug(document.name, document.sku), isHot: document.isHot === true } : null;
   }
 
   async productBySlug(slug: string) {

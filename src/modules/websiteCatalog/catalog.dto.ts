@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { booleanQuerySchema } from "../../shared/validation/commonSchemas";
 
 export const catalogQuerySchema = z.object({
   page: z.coerce.number().int().min(1).max(10000).default(1),
@@ -6,7 +7,8 @@ export const catalogQuerySchema = z.object({
   search: z.string().trim().max(100).default(""),
   category: z.string().trim().min(1).max(140).optional(),
   subcategory: z.string().trim().min(1).max(140).optional(),
-  featured: z.union([z.boolean(), z.enum(["true", "false"]).transform(value => value === "true")]).optional(),
+  featured: booleanQuerySchema.optional(),
+  isHot: booleanQuerySchema.optional(),
   sort: z.enum(["relevance", "name-asc", "name-desc", "sku"]).default("relevance"),
   view: z.enum(["summary", "detail"]).default("summary")
 });

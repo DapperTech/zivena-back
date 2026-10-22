@@ -8,6 +8,7 @@ en `/api/v1`. Solo lee colecciones existentes: no crea documentos ni índices.
 | GET | `/categories` | Categorías de MongoDB con `productCount` |
 | GET | `/subcategories` | Subcategorías con `categoryId` y `productCount` |
 | GET | `/products` | `{ items, pagination }` |
+| GET | `/products/hot` | `{ items, pagination }` solo con productos hot visibles |
 | GET | `/products/:id` | Producto completo, sin `_id`, con `slug` derivado |
 | GET | `/products/slug/:slug` | La misma ficha, localizada por slug |
 
@@ -23,10 +24,11 @@ Las respuestas siguen `{ success: true, data }`. Los errores conservan
 - `search`: búsqueda tolerante a acentos por nombre, SKU, taxonomía y atributos.
 - `sort`: `relevance`, `name-asc`, `name-desc` o `sku`.
 - `featured`: `true` o `false`, basado en el campo original.
+- `isHot`: `true` o `false`, selección editorial administrada desde el panel. Los documentos sin bandera se consideran `false`.
 - `view`: `summary` (predeterminado) o `detail`.
 
 `summary` devuelve identificadores, nombre, relaciones, disponibilidad,
-`featured`, `slug` y primera `image` (o `null`). `detail` conserva los campos del
+`featured`, `isHot`, `slug` y primera `image` (o `null`). `detail` conserva los campos del
 producto, incluidas imágenes, variantes, especificaciones y atributos. El build
 del website lo utiliza para obtener las fichas por lotes.
 
@@ -45,5 +47,6 @@ $env:PORT = '4001'
 npm run dev
 ```
 
-El website solo recibe la URL pública de esta API. Los formularios no forman
-parte de v2 y las credenciales de MongoDB permanecen únicamente en el backend.
+El website solo recibe la URL pública de esta API. Las credenciales de MongoDB
+permanecen únicamente en el backend. Consultar la [integración de formularios v2](website-leads-v2.md)
+y el [handoff de productos hot para Jorge](website-hot-products-v2.md).

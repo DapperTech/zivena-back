@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { emptyBodySchema, emptyQuerySchema } from "../../shared/validation/commonSchemas";
+import { booleanQuerySchema, emptyBodySchema, emptyQuerySchema } from "../../shared/validation/commonSchemas";
 
 const sourceSchema = z.object({
   portal: z.string().min(1),
@@ -27,10 +27,11 @@ const productPayloadSchema = z.object({
   url: z.string().url(),
   magentoProductId: z.string().min(1),
   productType: z.string().min(1),
-  categoryIds: z.array(z.string()).default([]),
-  subcategoryIds: z.array(z.string()).default([]),
+  categoryIds: z.array(z.string()),
+  subcategoryIds: z.array(z.string()),
   description: z.string(),
-  featured: z.boolean().default(false),
+  featured: z.boolean(),
+  isHot: z.boolean(),
   availability: z.object({
     status: z.string(),
     availableQuantity: z.number().optional(),
@@ -124,6 +125,7 @@ export const adminProductListQuerySchema = z.object({
     .default(""),
   category: z.string().trim().max(140).optional(),
   visibility: z.enum(["all", "visible", "hidden"]).default("all"),
+  isHot: booleanQuerySchema.optional(),
   sort: z.enum(["name-asc", "name-desc", "sku"]).default("name-asc")
 });
 
@@ -146,7 +148,12 @@ export const listAdminProductsSchema = z.object({
 });
 
 export const createProductSchema = z.object({
-  body: productPayloadSchema,
+  body: productPayloadSchema.extend({
+    categoryIds: productPayloadSchema.shape.categoryIds.default([]),
+    subcategoryIds: productPayloadSchema.shape.subcategoryIds.default([]),
+    featured: productPayloadSchema.shape.featured.default(false),
+    isHot: productPayloadSchema.shape.isHot.default(false)
+  }),
   params: emptyBodySchema,
   query: emptyQuerySchema
 });
