@@ -61,6 +61,7 @@ export type CatalogSource = {
 export type ProductEntity = {
   databaseId: string;
   id: string;
+  slug?: string;
   sku: string;
   name: string;
   url: string;

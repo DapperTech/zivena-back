@@ -10,7 +10,7 @@ import { CatalogQuery } from "./catalog.dto";
 type PublicProduct = Omit<ProductEntity, "databaseId">;
 
 const summaryProjection = {
-  _id: 0, id: 1, sku: 1, name: 1, categoryIds: 1, subcategoryIds: 1,
+  _id: 0, id: 1, slug: 1, sku: 1, name: 1, categoryIds: 1, subcategoryIds: 1,
   featured: 1, isHot: 1, availability: 1, images: { $slice: 1 }
 };
 
@@ -98,7 +98,7 @@ export class WebsiteCatalogRepository {
     const totalPages = Math.ceil(total / query.limit);
     return {
       items: documents.map(document => {
-        const slug = productSlug(document.name, document.sku);
+        const slug = document.slug || productSlug(document.name, document.sku);
         const isHot = document.isHot === true;
         if (query.view === "detail") return { ...document, slug, isHot };
         const { images, ...product } = document;
@@ -111,7 +111,7 @@ export class WebsiteCatalogRepository {
   async product(id: string): Promise<(PublicProduct & { slug: string }) | null> {
     const hidden = await this.hiddenSkus();
     const document = await ProductModel.findOne({ id, sku: { $nin: hidden } }, { _id: 0 }).lean();
-    return document ? { ...document, slug: productSlug(document.name, document.sku), isHot: document.isHot === true } : null;
+    return document ? { ...document, slug: document.slug || productSlug(document.name, document.sku), isHot: document.isHot === true } : null;
   }
 
   async productBySlug(slug: string) {

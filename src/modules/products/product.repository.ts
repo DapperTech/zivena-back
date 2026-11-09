@@ -33,6 +33,7 @@ type TaxonomyMaps = {
 type CatalogAggregationResult = {
   items: Array<
     Omit<CatalogProduct, "slug" | "categoryTitles" | "subcategoryTitles"> & {
+      slug?: string;
       subcategoryIds: string[];
     }
   >;
@@ -127,6 +128,7 @@ export class ProductRepository {
         $project: {
           _id: 0,
           id: 1,
+          slug: 1,
           sku: 1,
           name: 1,
           categoryIds: 1,
@@ -156,7 +158,7 @@ export class ProductRepository {
     return {
       items: result.items.map(({ subcategoryIds, ...product }) => ({
         ...product,
-        slug: productSlug(product.name, product.sku),
+        slug: product.slug || productSlug(product.name, product.sku),
         categoryTitles: titlesFor(product.categoryIds, taxonomy.categories),
         subcategoryTitles: titlesFor(subcategoryIds, taxonomy.subcategories)
       })),
@@ -207,7 +209,7 @@ export class ProductRepository {
     const { databaseId: _databaseId, ...publicProduct } = product;
     return {
       ...publicProduct,
-      slug: productSlug(product.name, product.sku),
+      slug: product.slug || productSlug(product.name, product.sku),
       categoryTitles: titlesFor(product.categoryIds, taxonomy.categories),
       subcategoryTitles: titlesFor(product.subcategoryIds, taxonomy.subcategories)
     };
@@ -266,6 +268,7 @@ export class ProductRepository {
         $project: {
           _id: 0,
           id: 1,
+          slug: 1,
           sku: 1,
           name: 1,
           categoryIds: 1,
@@ -296,7 +299,7 @@ export class ProductRepository {
     return {
       items: result.items.map((product) => ({
         ...product,
-        slug: productSlug(product.name, product.sku),
+        slug: product.slug || productSlug(product.name, product.sku),
         categoryTitles: titlesFor(product.categoryIds, taxonomy.categories),
         subcategoryTitles: titlesFor(product.subcategoryIds, taxonomy.subcategories)
       })),
@@ -311,16 +314,17 @@ export class ProductRepository {
   }
 
   async create(payload: CreateProductDto): Promise<ProductEntity> {
-    const document = await ProductModel.create(payload);
+    const document = await ProductModel.create({ ...payload, slug: productSlug(payload.name, payload.sku) });
     productSearchIndex.invalidate();
     return mapEntity(document.toObject() as unknown as Record<string, unknown>);
   }
 
   async updateById(id: string, payload: UpdateProductDto): Promise<ProductEntity | null> {
-    const previous = payload.sku
-      ? await ProductModel.findOne({ id }, { _id: 0, sku: 1 }).lean()
-      : null;
-    const document = await ProductModel.findOneAndUpdate({ id }, payload, {
+    const previous = await ProductModel.findOne({ id }, { _id: 0, sku: 1, name: 1, slug: 1 }).lean();
+    if (!previous) return null;
+    const document = await ProductModel.findOneAndUpdate({ id }, {
+      ...payload, slug: previous.slug || productSlug(previous.name, previous.sku),
+    }, {
       new: true,
       runValidators: true
     }).lean();

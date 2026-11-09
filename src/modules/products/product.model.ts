@@ -84,6 +84,7 @@ const referenceSourceSchema = new Schema(
 const productSchema = new Schema<ProductRecord>(
   {
     id: { type: String, required: true },
+    slug: String,
     sku: { type: String, required: true },
     name: { type: String, required: true },
     url: { type: String, required: true },
@@ -113,6 +114,9 @@ const productSchema = new Schema<ProductRecord>(
     versionKey: false
   }
 );
+
+// Applied explicitly after the slug backfill; production disables autoIndex.
+productSchema.index({ slug: 1 }, { unique: true, partialFilterExpression: { slug: { $type: "string" } } });
 
 export const ProductModel = (models.Product as Model<ProductRecord> | undefined) ??
   model<ProductRecord>("Product", productSchema);

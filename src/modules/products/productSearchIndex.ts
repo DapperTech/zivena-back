@@ -7,6 +7,7 @@ import { ProductImage } from "./product.types";
 
 type SearchSourceProduct = {
   id: string;
+  slug?: string;
   sku: string;
   name: string;
   categoryIds: string[];
@@ -164,6 +165,7 @@ class ProductSearchIndex {
         {
           _id: 0,
           id: 1,
+          slug: 1,
           sku: 1,
           name: 1,
           categoryIds: 1,
@@ -189,7 +191,7 @@ class ProductSearchIndex {
 
         return {
           id: product.id,
-          slug: productSlug(product.name, product.sku),
+          slug: product.slug || productSlug(product.name, product.sku),
           sku: product.sku,
           name: product.name,
           categoryIds: product.categoryIds,

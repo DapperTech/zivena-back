@@ -4,6 +4,7 @@ import { productSlug } from "../products/productSlug";
 import { SitemapData } from "./seo.types";
 
 type SitemapProduct = {
+  slug?: string;
   name: string;
   sku: string;
   source?: { extractedAt?: string };
@@ -17,13 +18,13 @@ type SitemapCategory = {
 export class SeoRepository {
   async sitemapData(): Promise<SitemapData> {
     const [products, categories] = await Promise.all([
-      ProductModel.find({}, { _id: 0, name: 1, sku: 1, "source.extractedAt": 1 }).lean(),
+      ProductModel.find({}, { _id: 0, slug: 1, name: 1, sku: 1, "source.extractedAt": 1 }).lean(),
       CategoryModel.find({}, { _id: 0, slug: 1, "source.extractedAt": 1 }).lean()
     ]);
 
     return {
       products: (products as unknown as SitemapProduct[]).map((product) => ({
-        slug: productSlug(product.name, product.sku),
+        slug: product.slug || productSlug(product.name, product.sku),
         lastModified: product.source?.extractedAt
       })),
       categories: (categories as unknown as SitemapCategory[]).map((category) => ({

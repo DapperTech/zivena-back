@@ -10,6 +10,7 @@
     "start": "node dist/server/index.js",
     "bootstrap:admin": "tsx src/scripts/bootstrapAdmin.ts",
     "seed:hot": "tsx src/scripts/seedHotProducts.ts",
+    "backfill:slugs": "tsx src/scripts/backfillProductSlugs.ts",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck"
   },
