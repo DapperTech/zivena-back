@@ -1,3 +1,4 @@
+import { referencePhoto } from "./referencePhoto";
 import { Router } from "express";
 import { validate } from "../../middlewares/validate";
 import { sendSuccess } from "../../shared/http/response";
@@ -14,6 +15,7 @@ export const createWebsiteCatalogRoutes = (
 ): Router => {
   const router = Router();
 
+  router.get("/reference-photo", referencePhoto);
   router.get("/categories", async (_req, res) => {
     sendSuccess(res, await repository.categories());
   });
